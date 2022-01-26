@@ -498,7 +498,7 @@ export class EditorComponent extends connect(rootStore)(LitElement) {
           break;
 
         case StateType.ElementoIncluido:
-          this.inserirNovoElementoNoQuill(event.elementos![0], event.referencia as Elemento);
+          this.inserirNovoElementoNoQuill(event.elementos![0], event.referencia as Elemento, true);
           this.inserirNovosElementosNoQuill(event);
           break;
 
@@ -567,7 +567,7 @@ export class EditorComponent extends connect(rootStore)(LitElement) {
     }
   }
 
-  private inserirNovoElementoNoQuill(elemento: Elemento, referencia: Elemento): void {
+  private inserirNovoElementoNoQuill(elemento: Elemento, referencia: Elemento, selecionarLinha?: boolean): void {
     const linhaRef: EtaContainerTable | undefined = this.quill.getLinha(referencia.uuid!);
 
     if (linhaRef) {
@@ -580,11 +580,13 @@ export class EditorComponent extends connect(rootStore)(LitElement) {
       }
 
       if (this.quill.linhaAtual.blotConteudo.html !== '' || novaLinha.blotConteudo.html === '') {
-        this.quill.desmarcarLinhaAtual(this.quill.linhaAtual);
-        this.quill.marcarLinhaAtual(novaLinha);
+        if (selecionarLinha) {
+          this.quill.desmarcarLinhaAtual(this.quill.linhaAtual);
+          this.quill.marcarLinhaAtual(novaLinha);
+        }
 
         try {
-          this.quill.setIndex(this.quill.getIndex(novaLinha.blotConteudo), Quill.sources.SILENT);
+          selecionarLinha ? this.quill.setIndex(this.quill.getIndex(novaLinha.blotConteudo), Quill.sources.SILENT) : undefined;
         } catch (e) {
           console.log(e);
         }
@@ -596,11 +598,11 @@ export class EditorComponent extends connect(rootStore)(LitElement) {
     }
   }
 
-  private inserirNovosElementosNoQuill(event: StateEvent): void {
+  private inserirNovosElementosNoQuill(event: StateEvent, selecionarLinha?: boolean): void {
     const elementos: Elemento[] = event.elementos ?? [];
 
     for (let i = 1; i < elementos.length; i++) {
-      this.inserirNovoElementoNoQuill(elementos[i], elementos[i - 1]);
+      this.inserirNovoElementoNoQuill(elementos[i], elementos[i - 1], selecionarLinha);
     }
   }
 
