@@ -7,7 +7,6 @@ import { RenumerarElemento } from '../acao/renumerarElementoAction';
 import { restaurarElementoAction } from '../acao/restaurarElemento';
 import { suprimirElementoAction } from '../acao/suprimirElemento';
 import { TransformarElemento } from '../acao/transformarElementoAction';
-import { getDispositivoAndFilhosAsLista } from '../hierarquia/hierarquiaUtil';
 
 export class DispositivoOriginal implements TipoSituacao {
   descricaoSituacao = DescricaoSituacao.DISPOSITIVO_ORIGINAL;
@@ -21,7 +20,7 @@ export class DispositivoOriginal implements TipoSituacao {
       .filter((a: ElementoAction) => !(a instanceof TransformarElemento))
       .filter((a: ElementoAction) => !(a instanceof RenumerarElemento));
 
-    if (getDispositivoAndFilhosAsLista(dispositivo).filter(f => isSituacaoExclusivaDispositivoEmenda(f)).length > 0) {
+    if (isSituacaoExclusivaDispositivoEmenda(dispositivo)) {
       acoesFiltradas.push(restaurarElementoAction);
     } else {
       acoesFiltradas.push(suprimirElementoAction);
