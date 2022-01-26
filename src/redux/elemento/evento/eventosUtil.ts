@@ -99,7 +99,7 @@ export const buildEventoTransformacaooElemento = (
 
 export const removeAndBuildEvents = (articulacao: Articulacao, dispositivo: Dispositivo): StateEvent[] => {
   const removidos = getElementos(dispositivo);
-  const dispositivosRenumerados = listaDispositivosRenumerados(dispositivo);
+  const dispositivosRenumerados = listaDispositivosRenumerados(dispositivo).filter(d => !d.isDispositivoAlteracao || d.tipo !== 'Artigo');
   const dispositivoAnterior = getDispositivoAnterior(dispositivo);
 
   const pai = dispositivo.pai!;

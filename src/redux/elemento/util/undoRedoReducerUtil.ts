@@ -84,7 +84,10 @@ export const incluir = (state: State, evento: StateEvent, novosEvento: StateEven
     const pai = getDispositivoPaiFromElemento(state.articulacao!, elemento!);
 
     const novos = redoDispositivosExcluidos(state.articulacao, evento.elementos);
-    pai?.renumeraFilhos();
+
+    if (!novos[0].isDispositivoAlteracao || novos[0].tipo !== 'Artigo') {
+      pai?.renumeraFilhos();
+    }
 
     if (novosEvento) {
       const posicao = elemento!.hierarquia!.posicao;
