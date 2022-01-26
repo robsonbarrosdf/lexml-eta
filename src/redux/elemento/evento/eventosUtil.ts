@@ -184,7 +184,7 @@ export const restauraAndBuildEvents = (articulacao: Articulacao, dispositivo: Di
 
   eventos.add(
     StateType.ElementoRestaurado,
-    aRestaurar.map(a => createElemento(a))
+    aRestaurar.map(a => createElemento(a, true))
   );
 
   return eventos.build();
