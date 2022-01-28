@@ -266,12 +266,14 @@ export const getFilhosDispositivoAsLista = (dispositivos: Dispositivo[], filhos:
 };
 
 export const getDispositivoAndFilhosAsLista = (dispositivo: Dispositivo): Dispositivo[] => {
-  const lista: Dispositivo[] = [];
+  // const lista: Dispositivo[] = [];
 
-  lista.push(dispositivo);
-  getFilhosDispositivoAsLista(lista, dispositivo.filhos);
+  // lista.push(dispositivo);
+  // getFilhosDispositivoAsLista(lista, dispositivo.filhos);
 
-  return lista;
+  // return lista;
+
+  return buildListaDispositivos(dispositivo, []);
 };
 
 export const isArtigoUnico = (dispositivo: Dispositivo): boolean => {
