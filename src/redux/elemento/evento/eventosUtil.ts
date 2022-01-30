@@ -99,7 +99,7 @@ export const buildEventoTransformacaooElemento = (
 
 export const removeAndBuildEvents = (articulacao: Articulacao, dispositivo: Dispositivo): StateEvent[] => {
   const removidos = getElementos(dispositivo);
-  const dispositivosRenumerados = listaDispositivosRenumerados(dispositivo).filter(d => !d.isDispositivoAlteracao || d.tipo !== 'Artigo');
+  const dispositivosRenumerados = listaDispositivosRenumerados(dispositivo);
   const dispositivoAnterior = getDispositivoAnterior(dispositivo);
 
   const pai = dispositivo.pai!;
@@ -282,6 +282,13 @@ export const createEventos = (): StateEvent[] => {
     },
     {
       stateType: StateType.SituacaoElementoModificada,
+      referencia: undefined,
+      pai: undefined,
+      posicao: undefined,
+      elementos: [],
+    },
+    {
+      stateType: StateType.ElementoMarcado,
       referencia: undefined,
       pai: undefined,
       posicao: undefined,
