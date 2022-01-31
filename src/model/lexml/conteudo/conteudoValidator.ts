@@ -22,6 +22,10 @@ import {
   TEXTO_DEFAULT_DISPOSITIVO_ALTERACAO,
 } from './conteudoUtil';
 
+const hasCitacaoAoFinalFrase = (texto: string): boolean => {
+  return texto !== undefined && /.*:[\s]{1,2}["”“].*[.]["”“]$/.test(texto);
+};
+
 export const validaTextoAgrupador = (dispositivo: Dispositivo): Mensagem[] => {
   const mensagens: Mensagem[] = [];
   if (!isArticulacao(dispositivo) && (!dispositivo.texto || dispositivo.texto.trim().length === 0)) {
@@ -75,7 +79,13 @@ export const validaTextoDispositivo = (dispositivo: Dispositivo): Mensagem[] => 
       descricao: `${dispositivo.descricao} deveria iniciar com letra minúscula, a não ser que se trate de uma situação especial, como nome próprio`,
     });
   }
-  if (dispositivo.texto && (isArtigo(dispositivo) || isParagrafo(dispositivo)) && dispositivo.texto !== TEXTO_OMISSIS && !/^[A-ZÀ-Ú]/.test(dispositivo.texto)) {
+  if (
+    dispositivo.texto &&
+    (isArtigo(dispositivo) || isParagrafo(dispositivo)) &&
+    dispositivo.texto !== TEXTO_OMISSIS &&
+    !/^[...]{3,}/.test(dispositivo.texto) &&
+    !/^[A-ZÀ-Ú]/.test(dispositivo.texto)
+  ) {
     mensagens.push({
       tipo: TipoMensagem.ERROR,
       descricao: `${dispositivo.descricao} deveria iniciar com letra maiúscula`,
@@ -85,8 +95,10 @@ export const validaTextoDispositivo = (dispositivo: Dispositivo): Mensagem[] => 
     dispositivo.texto &&
     !isAgrupador(dispositivo) &&
     !isOmissis(dispositivo) &&
+    dispositivo.texto !== TEXTO_OMISSIS &&
     ((!isArtigo(dispositivo) && hasFilhos(dispositivo)) || (isArtigo(dispositivo) && hasFilhos((dispositivo as Artigo).caput!))) &&
-    !hasIndicativoDesdobramento(dispositivo)
+    !hasIndicativoDesdobramento(dispositivo) &&
+    !isUltimaAlteracao(dispositivo)
   ) {
     mensagens.push({
       tipo: TipoMensagem.ERROR,
@@ -153,7 +165,8 @@ export const validaTextoDispositivo = (dispositivo: Dispositivo): Mensagem[] => 
     !hasFilhos(dispositivo) &&
     !dispositivo.hasAlteracao() &&
     !isUnicoMesmoTipo(dispositivo) &&
-    !hasIndicativoContinuacaoSequencia(dispositivo)
+    !hasIndicativoContinuacaoSequencia(dispositivo) &&
+    !isDispositivoAlteracao(dispositivo)
   ) {
     mensagens.push({
       tipo: TipoMensagem.ERROR,
@@ -196,7 +209,14 @@ export const validaTextoDispositivo = (dispositivo: Dispositivo): Mensagem[] => 
       descricao: `O último dispositivo do bloco de alteração deve terminar com: <b>.&#8221; (NR)</b>`,
     });
   }
-  if (isDispositivoAlteracao(dispositivo) && dispositivo.texto && !isUltimaAlteracao(dispositivo) && /["”“].*/.test(dispositivo.texto) && !/”.*(NR)/.test(dispositivo.texto)) {
+  if (
+    isDispositivoAlteracao(dispositivo) &&
+    dispositivo.texto &&
+    !isUltimaAlteracao(dispositivo) &&
+    /.*["”“]$/.test(dispositivo.texto) &&
+    !hasCitacaoAoFinalFrase(dispositivo.texto) &&
+    !/”.*(NR)/.test(dispositivo.texto)
+  ) {
     mensagens.push({
       tipo: TipoMensagem.ERROR,
       descricao: `Somente o último dispositivo do bloco de alteração poderia ser finalizado com aspas`,

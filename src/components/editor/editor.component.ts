@@ -816,6 +816,7 @@ export class EditorComponent extends connect(rootStore)(LitElement) {
         const el = this.quill.getLinha(elementos![1].uuid!);
         this.quill.setSelection(this.quill.getIndex(el?.blotConteudo), 0, Quill.sources.USER);
       }, 0);
+      rootStore.dispatch(validarArticulacaAction.execute());
     }, 0);
   }
 
